@@ -1,55 +1,39 @@
 # ETL_Project_Group2
-## Data Cleanup & Analysis
 
-Once you have identified your datasets, perform ETL on the data. Make sure to plan and document the following:
+## **E**xtract: your original data sources and how the data was formatted (CSV, JSON, pgAdmin 4, etc).
 
-* The sources of data that you will extract from.
+### Data Sources 
 
-Kaggle median income
-zillow sale prices city
-
-Calendar year 2017 data
+1) US median household income by city (https://www.kaggle.com/goldenoakresearch/us-household-income-stats-geo-locations?select=kaggle_income.csv)
+2) Zillow house price data by city (https://www.kaggle.com/paultimothymooney/zillow-house-price-data)
 
 
-* The type of transformation needed for this data (cleaning, joining, filtering, aggregating, etc).
+Given that the most recent median household income data was 2017, we chose to focus on calendar year 2017 for our analyeses.
 
-Merge csv files based on city and state; 
+## **T**ransform: what data cleaning or transformation was required?
 
-clean: merge files based on city and state; dropna; data set 32,219 rows to 2798 rows
-filter: extra date columns <> 2017; w_sum; 
-join: in SQL created 'income' and 'sales' schemas 
+### Data Cleaning and transformation
 
-select * 
-from income 
-left join sales_2017 on income."City" = sales_2017. "City" and income."State" = sales_2017."State";
+#### Data cleaning: 
+1) Dropped missing rows (using dropna)
+2) Dropped unnecessary columns in datasets (e.g., extra date columns <> 2017, latitude/longitude data, water source, w_sum) 
+3) Calculated average sales for each city for 2017 (averaged sales from January 2017 to December 2017) 
+4) Joined tables using two methods: 1) In SQL created 'income' and 'sales2017' tables and used a left join to merge the separate tables (using the composite key on 'City' and 'State'). 2) In pandas, created a merged dataframe (housing_df) by joining by 'City' and 'State' and only included rows that had data across both datasets. By dropping rows that had missing values on either dataset, the dataset dropped from 32,219 rows to 2798 rows.
 
-* The type of final production database to load the data into (relational or non-relational).
 
-SQL a relational database
+## **L**oad: the final database, tables/collections, and why this was chosen.
 
-* The final tables or collections that will be used in the production database.
+# The type of final production database to load the data into (relational or non-relational):
 
-schema.sql
-query.sql
+We will be using SQL, a relational database.
 
-## Project Report
-At the end of the week, your team will submit a Final Report that describes the following:
+# Final tables/collections
+1) income 
+2) sales2017 
+3) housing_df (merged table that only has rows that have observations across both the income and sales2017 tables)
 
-* **E**xtract: your original data sources and how the data was formatted (CSV, JSON, pgAdmin 4, etc).
-kaggle csv files
 
-* **T**ransform: what data cleaning or transformation was required.
-
-Merge csv files based on city and state; 
-
-clean: merge files based on city and state; dropna; data set 32,219 rows to 2798 rows
-filter: extra date columns <> 2017; w_sum; 
-join: in SQL created 'income' and 'sales' schemas 
-aggregation: average sales by city calculated field
-
-* **L**oad: the final database, tables/collections, and why this was chosen.
-
-join: left join in SQL created 'income' and 'sales' schemas 
+# SQL Queries
 
 create table income (
     id int,
@@ -64,7 +48,7 @@ create table income (
 	"Median" int,
 	"Stdev" int,
 	"sum_w" float,
-	PRIMARY KEY (State, City)
+	PRIMARY KEY ("State", "City")
 	);
     
 create table sales_2017 (
@@ -82,9 +66,11 @@ create table sales_2017 (
 	"October" float,
 	"November" float,
 	"December" float,
-	"Average_Sales" float,
-	Primary Key (State, City)
+	"AverageSales" float,
+	Primary Key ("State", "City")
 );
+
+select * from income; 
 
 select * from sales_2017;
 
@@ -92,4 +78,3 @@ select *
 from income 
 left join sales_2017 on income."City" = sales_2017."City" and income."State" = sales_2017."State";
 ​
-Please upload the report to Github and submit a link to Bootcampspot.
