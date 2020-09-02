@@ -11,7 +11,11 @@ create table income (
 	"Median" int,
 	"Stdev" int,
 	"sum_w" float,
+<<<<<<< HEAD
 	PRIMARY KEY (State, City)
+=======
+	PRIMARY KEY ("State", "City")
+>>>>>>> Elaine
 	);
 
 create table sales_2017 (
@@ -29,11 +33,24 @@ create table sales_2017 (
 	"October" float,
 	"November" float,
 	"December" float,
+<<<<<<< HEAD
 	"Average_Sales" float,
 	Primary Key (State, City)
 );
 
+=======
+	"AverageSales" float,
+	Primary Key ("State", "City")
+);
+
+select * from income;
+
+>>>>>>> Elaine
 select * from sales_2017;
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> Elaine
